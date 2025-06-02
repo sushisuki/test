@@ -1,0 +1,253 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI News Report (20250526 - 20250531)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 1000px; margin: auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+        #category-filter-controls { margin-bottom: 20px; padding: 10px; background-color: #ecf0f1; border-radius: 5px; }
+        #category-filter-controls h3 { margin-top: 0; margin-bottom: 10px; font-size: 1.2em; color: #2c3e50; }
+        #category-filter-controls label {
+            margin-right: 15px;
+            font-size: 0.95em;
+            cursor: pointer;
+        }
+        #category-filter-controls input[type="checkbox"] {
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+        .category-section { margin-bottom: 30px; }
+        .category-title { 
+            font-size: 1.8em; 
+            color: #16a085; 
+            border-bottom: 2px solid #1abc9c; 
+            padding-bottom: 10px; 
+            margin-bottom: 20px; 
+        }
+        .article { 
+            border: 1px solid #e0e0e0; 
+            border-radius: 5px; 
+            margin-bottom: 15px; 
+            padding: 15px; 
+            background-color: #fdfdfd; 
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .article.marked { background-color: #e8f5e9; border-left: 5px solid #4CAF50; } /* 重要マークの色 */
+        .article-title { font-size: 1.2em; font-weight: bold; margin-bottom: 8px; color: #34495e; }
+        .summary-toggle { 
+            background-color: #3498db; 
+            color: white; 
+            border: none; 
+            padding: 6px 12px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 0.9em;
+            margin-left: 10px;
+            float: right; /* 右寄せ */
+        }
+        .summary-toggle:hover { background-color: #2980b9; }
+        .article-summary { 
+            font-size: 0.95em; 
+            color: #555; 
+            margin-top: 10px; 
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            display: none; /* デフォルト非表示 */
+            line-height: 1.6;
+        }
+        .memo-section { margin-top: 15px; }
+        .memo-toggle {
+            background-color: #7f8c8d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8em;
+            margin-bottom: 5px;
+        }
+        .memo-toggle:hover { background-color: #60706f; }
+        .memo-textarea {
+            width: calc(100% - 22px); /* padding考慮 */
+            min-height: 60px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 0.9em;
+            display: none; /* デフォルト非表示 */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI News Report (20250526 - 20250531)</h1>
+        <div id="category-filter-controls">
+            <h3>カテゴリフィルタ</h3>
+            <!-- チェックボックスがここに動的に挿入されます -->
+        </div>
+        <div id="articles-container"></div>
+    </div>
+
+    <script>
+        const articlesData = {"NVIDIA系": [{"id": "article_20250526_20250531_NVIDIA系_0", "title": "Nvidia、米輸出規制後に安価な中国向けAIチップ「Blackwell」を発売か、情報筋が語る", "summary": "NVIDIAが米国の輸出規制の影響を受け、中国向けに新たなAIチップを投入する計画であると報じられた。これは「Blackwell」アーキテクチャに基づくGPUで、来月にも量産が始まる見通し。価格は6,500〜8,000ドルと、最近規制対象となったH20チップよりもかなり安く設定されている。これはスペックが抑えられているためで、GDDR7メモリを使用し、TSMCの高度なパッケージング技術「CoWoS」は使わない。", "importance": 1}, {"id": "article_20250526_20250531_NVIDIA系_1", "title": "Nvidia、H20チップのライセンス要件により数十億の収益損失を見込む", "summary": "エヌビディアの最新決算で、トランプ政権による中国へのAIチップ輸出規制が財務に大きな打撃を与えたことが明らかになった。2026会計年度（4月28日締め）の第1四半期に、同社は報告した： 中国企業へのH20 AIチップ販売を阻止した米国のライセンス制限に関連する45億ドルの費用。H20の未出荷売上が25億ドル追加されたが、これもこの規制によるものである。第2四半期を展望すると、エヌビディアは総売上高450億ドルのうち、輸出規制によりさらに80億ドルのコストがかかると予想している。", "importance": 1}, {"id": "article_20250526_20250531_NVIDIA系_2", "title": "NvidiaとAMDは、米国の規制を遵守するため、中国で新しいAIチップの販売をまもなく開始するかもしれない。", "summary": "NvidiaとAMDは、米国による先端半導体技術の対中輸出規制に対応するため、中国向けに新たなAI向けGPUの販売を近く開始する見込みだと、台湾メディアDigiTimesが報じた。Nvidiaは「B20」と呼ばれる性能を抑えたAIチップを、AMDは「Radeon AI PRO R9700」というワークステーション向けGPUを投入予定で、両社ともに7月から中国市場での販売を開始するとみられている。また、NvidiaはBlackwellアーキテクチャを基盤にした低価格版AIチップも中国向けに開発中で、価格は6,500〜8,000ドル程度になる見通し。既存のH20チップ（1万〜1.2万ドル）よりも安価な製品となる。", "importance": 1}], "Google系": [{"id": "article_20250526_20250531_Google系_0", "title": "グーグルの「ワールドモデル」への賭け：マイクロソフトがUIを獲得する前にAI操作層を構築する", "summary": "GoogleはI/O 2025で、AIの未来を担う中核戦略として「世界モデル（world model）」と「ユニバーサルAIアシスタント」の構想を打ち出した。これは物理世界を理解し、推論し、行動できるAIを目指すもので、既存のGeminiモデル群をベースに構築されている。検索エンジンや開発者向けツール、創造系ツールなどに急速に統合されつつあり、Geminiの利用は飛躍的に増加している。CEOのサンダー・ピチャイやDeepMindのデミス・ハサビスは、「世界モデル」が汎用人工知能（AGI）への道であり、Geminiアプリを「個人的で、能動的で、強力な」アシスタントに進化させることが目標と述べた。", "importance": 1}, {"id": "article_20250526_20250531_Google系_1", "title": "ChromeのGeminiは、Googleのエージェント時代への小さな一歩のように感じられる", "summary": "GeminiのChrome統合を使ってみた筆者は、その便利さと限界の両方を体感した。ブラウザ右上のボタンから呼び出せるGeminiは、画面上の情報を“見ながら”会話できる点が特徴だが、現時点ではできることがまだ限られている。記事の要約や動画の内容説明、Amazonの商品リストの中からアイテムを見つけるといったことは可能だが、画面に表示されていない情報にはアクセスできず、商品購入や注文などの“代理行動”はまだ非対応。YouTube動画の中で使われている道具の説明や、レシピの抽出などは便利で、特に動画を見ながら補助的に使うのに適している。", "importance": 1}, {"id": "article_20250526_20250531_Google系_2", "title": "MetaのAIチームは人材流出に直面しており、2023年のLlamaの画期的な論文の著者14人のうち、Metaに残っているのはわずか3人であり、数人はMistralに加わった", "summary": "MetaのLlama AIチームでは、多くの主要研究者が退職し、特にフランスの新興企業Mistralに移籍している。Llamaモデルの初期開発に関わった14人のうち、Metaに残っているのは3人だけで、他は次々と離脱。Mistralの共同創業者にはMeta出身のGuillaume LampleやTimothée Lacroixが名を連ね、強力なオープンソースモデルを開発中だ。Meta内部でも人事の動きがあり、8年間FAIR（Fundamental AI Research）を率いたJoelle Pineauが退任し、後任にはDeepMind出身のRobert Fergusが就任。", "importance": 1}, {"id": "article_20250526_20250531_Google系_3", "title": "MacでローカルLLMが動く！「LM Studio」で大規模言語モデルを使ってみよう", "summary": "Mac上で大規模言語モデル（LLM）をローカルで使う方法として、「LM Studio」という無料アプリが紹介されている。これはインターネット接続不要で、個人情報などを外部に送らずに済むため、プライバシーやセキュリティに優れる。LM StudioはAppleシリコン搭載Mac専用で、GUI操作により簡単にさまざまなオープンソースのLLMをダウンロード・実行できる。MetaのLlamaやGoogleのGemmaなど有名モデルに対応しており、日本語やプログラミングに特化したモデルも利用可能。", "importance": 1}, {"id": "article_20250526_20250531_Google系_4", "title": "Anthropicが、Googleドキュメント、ドライブ、カレンダーを検索するClaudeの会話音声モードをモバイルに初搭載", "summary": "Anthropicが発表した新機能では、Claude AIチャットボットに音声会話モードが追加され、iOSおよびAndroidのモバイルアプリで利用可能になった。また、無料プランのユーザーにもWeb検索機能が開放された。音声モードは英語のみ対応で、アプリ内限定の提供。ClaudeはGoogleカレンダーやGmailなどの連携機能も備え、Pro以上の有料プランで利用可能。", "importance": 2}, {"id": "article_20250526_20250531_Google系_5", "title": "WordPressがAIチームを結成", "summary": "WordPressがAI製品開発を主導する専任チームを新たに発足した。チームにはAutomatticのJames LePageをはじめ、GoogleのFelix ArntzやPascal Birchler、10upのJeff Paulが参加している。これまでオープンソースコミュニティ内ではAIツールの開発が活発だったが、今回のチーム設立はその取り組みを統一・整理し、WordPressの長期的目標に沿った形で進める意図がある。現在、660種類以上のAIプラグインが公開されており、人気の高いものにはテンプレートビルダー、SEO最適化、チャットボットなどがある", "importance": 1}, {"id": "article_20250526_20250531_Google系_6", "title": "Googleフォト、新しいAIツールでエディターを一新", "summary": "GoogleがGoogleフォトの10周年を記念して編集機能を刷新し、これまでPixel限定だったAI機能「Reimagine」と「Auto Frame」を一般ユーザーにも開放した。「Reimagine」は生成AIで写真内の背景やオブジェクトをテキストで変えられ、「Auto Frame」はトリミングやAIによる自動補完で構図を提案してくれる。新エディタではすべての編集ツールが一か所にまとまり、複数の効果を一括適用する「AI Enhance」や、写真の特定部分をタップして最適な編集を提案する機能も追加された。このアップデートは来月からAndroidで段階的に展開され、iOSは年内に対応予定。", "importance": 1}, {"id": "article_20250526_20250531_Google系_7", "title": "Perplexityの新しいツールPerplexity Labsは、スプレッドシートやダッシュボードなどを生成することができる。", "summary": "Perplexityは、検索エンジンの枠を超えて多機能なAIツール「Perplexity Labs」を発表した。これは月額20ドルのProプラン利用者向けの新機能で、レポートやスプレッドシート、ダッシュボード、WebアプリなどをAIで作成できる。LabsはWeb、iOS、Androidで利用可能で、MacやWindowsアプリにも近日対応予定。このツールは、検索やコード実行、画像・グラフ生成など複数の手段を使い、約10分かけて深い分析や作業を行うのが特徴。", "importance": 2}, {"id": "article_20250526_20250531_Google系_8", "title": "GeminiがGoogle Driveの動画を視聴できるようになりました。", "summary": "Googleは、Drive上の動画に関する情報をユーザーが簡単に得られる新機能を導入した。Gemini AIが、文書やPDFだけでなく動画の内容も要約できるようになり、ユーザーは映像を見ずに概要や要点を把握できる。たとえば、会議の録画からアクションアイテムを抽出したり、発表動画の重要な情報を整理することが可能になる。字幕が有効な動画が対象で、英語で利用でき、Google WorkspaceやOne AI Premiumの利用者、またはGeminiの有料アドオン購入者が対象。", "importance": 1}, {"id": "article_20250526_20250531_Google系_9", "title": "YouTubeがショートで見たものを検索できるようになる", "summary": "YouTubeは、ショート動画に「Google Lens」機能を導入することを発表した。今後数週間以内にベータ版として展開される予定で、動物、植物、建物など、動画内の気になる対象を調べることができるようになる。ユーザーはモバイルアプリ上でショート動画を一時停止し、画面上部のLensボタンをタップ。その後、調べたい対象を囲んだりタップしたりすると、関連するビジュアルや検索結果が動画上に重ねて表示される。", "importance": 1}, {"id": "article_20250526_20250531_Google系_10", "title": "GmailのAI要約が自動的に表示されるようになった", "summary": "Googleは、GmailでAIアシスタント「Gemini」による自動メール要約機能を導入し、長文メールの要点をカード形式で上部に表示するようにしました。これにより、ユーザーが手動で要約を要求しなくても、必要に応じて自動で要約されます。ただし、従来の手動要約機能も引き続き利用可能です。AI要約の信頼性には懸念があるものの、Googleは他社と同様に日常的なサービスへのAI統合を進めています。", "importance": 2}, {"id": "article_20250526_20250531_Google系_11", "title": "グーグル、AIが「今は2024年」と表示するバグを修正", "summary": "GoogleのAI検索機能「AI Overviews」が、ユーザーの「今は何年か？」という単純な質問に対して「2024年」と誤った回答を返す不具合が報告されました（実際は2025年）。このバグは複数のユーザーによって確認され、記者が木曜朝に試しても同様の誤答が出ました。Googleはその日のうちに修正しましたが、なぜこのようなミスが起きたかについての具体的な説明はなく、「改善を重ねており、この種の問題を防ぐためのアップデートに取り組んでいる」と述べました。AI Overviewsは以前から「石を1日1個食べると健康にいい」「ピザにチーズを貼り付けるために接着剤を使え」などの奇妙な誤回答をしてきた経緯があります。", "importance": 1}], "ロボティクス系": [{"id": "article_20250526_20250531_ロボティクス系_0", "title": "Intempusがロボットに人間の生理状態を持たせるべきだと考える理由", "summary": "19歳のTeddy Warnerは、高校時代から工作機械の工場で働くなどロボットに深い関心を持ち、現在は自らのロボット企業Intempusを立ち上げている。彼の目標は、ロボットに人間のような感情表現を持たせることで、人間とロボットの自然なコミュニケーションを実現すること。MidjourneyでのAI研究の経験から、ロボットに「生理的状態（Bステップ）」が欠けていることが、空間的理解や予測可能な動作の欠如につながっていると気づいたという。最初はfMRIを使ったが成果は出ず、代わりに発汗データを用いたポリグラフにヒントを得て、感情を模倣できるモデルを開発。", "importance": 1}, {"id": "article_20250526_20250531_ロボティクス系_1", "title": "Hugging Face、2種類のヒューマノイド・ロボットを発表", "summary": "Hugging Faceはロボティクス分野への進出をさらに強化し、新たに2体のオープンソース人型ロボット「HopeJR」と「Reachy Mini」を発表した。HopeJRは歩行や腕の動きなど66の独立した動作が可能な等身大ロボットで、Reachy Miniはデスクトップサイズで会話や音声認識ができ、AIアプリのテストに使える。価格はHopeJRが約3,000ドル、Reachy Miniが250〜300ドル程度と見積もられている。出荷時期は未定だが、年内に最初のユニットを出荷する予定で、現在ウェイトリストが公開されている。", "importance": 1}], "技術トレンド系": [{"id": "article_20250526_20250531_技術トレンド系_0", "title": "【2025年5月完全版】RAG の教科書", "summary": "AI技術の進化、とくに自然言語処理分野における「RAG（Retrieval-Augmented Generation）」の重要性と活用について詳しく解説しています。RAGは、検索と生成を組み合わせた手法で、単なる生成AIよりも正確で信頼性の高い回答を導くことができ、さまざまな業界での実装が進んでいます。RAGにはいくつかのバリエーションがあり、用途に応じて最適な手法が選ばれています。例えば、情報を幅広く扱える「NativeRAG」、構造化知識を活かす「GraphRAG」、その両者を組み合わせた「HybridRAG」、そして柔軟な検索・推論が可能な「AgenticRAG」などがあります。", "importance": 1}, {"id": "article_20250526_20250531_技術トレンド系_1", "title": "サイバーエージェント社員の20%が使うAIプラットフォーム「Dify」、プロダクト主導で3,000時間/月削減する方法", "summary": "この記事は、サイバーエージェントのAIオペレーション室が生成AIを活用して業務効率化を進めている取り組みについて紹介しています。具体的には、誰でも簡単に生成AIアプリを作れるOSSプラットフォーム「Dify」を全社展開し、約1,800人が利用するまでに成長させた過程や工夫が述べられています。導入では、オンボーディングを迅速かつ簡単にするためにSlackと連携した自動化プロセスを構築し、ユーザーの離脱を防止。また、社内のサポート体制やフィードバックループを整備することで、使いやすさと定着率を高めました。", "importance": 1}, {"id": "article_20250526_20250531_技術トレンド系_2", "title": "GitHub MCP Exploited：Claude 4とGitHub MCPがあなたのプライベートGitHubリポジトリを漏洩させる", "summary": "Invariantは、GitHubのMCPサーバーに重大な脆弱性があることを発見した。この脆弱性により、攻撃者が悪意のあるGitHub Issueを通じてエージェントを乗っ取り、ユーザーのプライベートリポジトリからデータを漏洩させることができる。攻撃の仕組みは、ユーザーが自分のGitHubアカウントに接続されたMCPクライアント（例：Claude Desktop）を使用して、公開リポジトリのIssueを確認すると、そこに埋め込まれたプロンプトインジェクションにより、エージェントが意図せずプライベートリポジトリの情報を読み取り、それを公開リポジトリのプルリクエストなどを通じて外部に漏らすというもの。この脆弱性は「Toxic Agent Flow」と呼ばれる、新種のセキュリティリスクの一例で、Invariantが開発したセキュリティスキャナーによって検出された。", "importance": 1}, {"id": "article_20250526_20250531_技術トレンド系_3", "title": "ミストラル、Python実行、画像生成、RAGなどを行うAIエージェントを構築するためのAPIを発表", "summary": "フランスのAIスタートアップMistral AIが、企業や開発者向けに新たなサービス「Agents API」を発表した。これは最新の自社製モデル「Mistral Medium 3」を中核に据え、アプリに高度な自律型AIエージェント機能を簡単に組み込めるもの。複数エージェントの連携や会話の文脈保持、リアルタイム応答、Web検索、コード実行、画像生成、ドキュメント連携などの機能を備える。これにより、開発者はエージェントを使って旅行計画、金融分析、食事管理など多様な実務を自動化できる。", "importance": 1}, {"id": "article_20250526_20250531_技術トレンド系_4", "title": "VibeCodingに必須の便利ツール「repomix」の紹介", "summary": "repomixは、やまだしさんが開発したツールで、LLMに渡すコードコンテキストを1つのファイルにまとめることで、実装計画の精度を高めてくれる。特にVibeCodingのように事前に実装計画を立てることが前提の開発フローでは、適切な情報だけを整理してLLMに与えることが重要であり、repomixはそのために非常に有効。使い方は簡単で、対象のファイルを指定して実行すると、YAML形式でまとめられたファイルが生成される。このファイルを好みのモデル（例：o3）に渡すことで、より高品質な実装計画が得られる。", "importance": 1}, {"id": "article_20250526_20250531_技術トレンド系_5", "title": "イレブンラボ、「会話AI 2.0の」音声アシスタントを発表。", "summary": "ElevenLabsが発表した「Conversational AI 2.0」は、企業向けに自然で高度な音声対話を実現する大幅なアップデート。人間らしい会話の間合いを理解する新しいターンテイキング技術、多言語対応、自動知識取得（RAG）、マルチモーダル対応、複数の人格を使い分ける機能、大規模な自動発信機能などを備えている。HIPAA準拠やEU向けデータ保護も整備されており、医療やカスタマーサポートといった分野での活用が見込まれる。柔軟な価格プランも用意されており、音声AI領域での競争が加速する中、リアルでコンテキストを理解する対話型エージェントの構築を可能にする強力なプラットフォームとなっている", "importance": 1}, {"id": "article_20250526_20250531_技術トレンド系_6", "title": "QwenLong-L1、現在のLLMを悩ますロングコンテクスト推論の課題を解決", "summary": "Alibabaが発表した「QwenLong-L1」は、大規模言語モデル（LLM）が非常に長い文書を理解・推論できるようにする新しい強化学習フレームワーク。従来のLLMは4,000トークン程度の短文では高い性能を発揮できたが、10万トークン以上に及ぶ長文では多段階の分析が必要となり対応が難しかった。QwenLong-L1はこの課題に対し、段階的な学習プロセスを通じてモデルの長文対応力を高める。教師あり学習で基礎力を養い、その後、入力長を徐々に伸ばすカリキュラム型強化学習を実施。", "importance": 1}], "Meta系": [{"id": "article_20250526_20250531_Meta系_0", "title": "ニック・クレッグ、アーティストに使用許可を求めればAI産業を「殺す」と発言", "summary": "元英国副首相でMetaの元幹部でもあるニック・クレッグは、英国がAI規制を検討する中で、アーティストの「事前同意」を義務付ける動きについて「AI業界を事実上殺す」と発言した。自身の新刊のイベントで、クレッグはクリエイターが自分の作品をAIの学習に使われないよう「オプトアウト」する権利は認められるべきだとしつつ、事前同意を一つひとつ得るのは現実的ではないと述べた。英国議会では、AI企業に著作物の利用状況を開示させる法改正案をめぐり議論が続いている。5月にはポール・マッカートニー、デュア・リパ、エルトン・ジョンら多数のアーティストが賛同する公開書簡が発表され、支持を集めた。", "importance": 1}, {"id": "article_20250526_20250531_Meta系_1", "title": "Duolingoの「AIファースト」宣言とそれに殺到した批判への苦慮", "summary": "DuolingoのCEOが「AIファースト」を宣言し、AIで代替可能な業務委託を段階的に廃止すると発表した後、大きな反発が起こった。特にTikTokやInstagramの公式アカウントには批判コメントが殺到し、同社は全投稿を一時削除する事態に。その後、マスコットのマスクをかぶった男性が登場する皮肉めいた動画を投稿したが、これも否定的な反応を招いたため、続く投稿でCEO自身が登場し、説明を行った。さらにLinkedInでもメッセージを発信し、AIは仕事のやり方を根本から変えるが、社員を置き換えるものではなく、採用は継続していると強調。", "importance": 1}, {"id": "article_20250526_20250531_Meta系_2", "title": "マーク・ザッカーバーグ、Meta AIの月間アクティブユーザー数は10億人と発表", "summary": "MetaのAIアシスタントは、同社のアプリ群を通じて月間10億人のアクティブユーザーを達成したと、CEOのマーク・ザッカーバーグが株主総会で発表した。この数字は、4月にスタンドアロンアプリをリリースした後の成果であり、MetaはこのAIを「個人化・音声対話・エンタメ重視のパーソナルAI」として強化していく方針だ。ザッカーバーグは将来的に、AI機能の中に有料のレコメンド機能や、より多くの計算資源が使えるサブスクリプションプランを導入する可能性があると述べた。収益化はまだ先だが、成長が優先とのこと。", "importance": 1}], "OpenAI系": [{"id": "article_20250526_20250531_OpenAI系_0", "title": "弁護士がAI幻覚を提示して逮捕された事例を追跡したデータベースによると、2023年6月まで遡る116件のうち20件が今月発生", "summary": "AIによって生成された“幻覚”コンテンツ（実在しない判例や法的情報）を弁護士が実際の法廷で使用し、処分を受けたケースのデータベースが、Damien Charlotinによってまとめられている。これは単にAIが使われた可能性があるという話ではなく、弁護士がAIによる誤情報を実際に提出し、その事実が法的に確認された事件だけを集めたもの。データベースには12カ国、116件の事例が登録されており、2025年5月だけでも20件が新たに追加されている。2年前に初めて大きく報道されたChatGPTによる架空判例引用事件の後、多くの専門家が注意喚起されたはずだったが、実際にはこのような誤用は増加傾向にある。", "importance": 1}, {"id": "article_20250526_20250531_OpenAI系_1", "title": "OpenAIは近々、他のアプリでも「ChatGPTでサインイン」できるようになるかもしれない", "summary": "OpenAIは、ChatGPTアカウントを使って外部アプリにログインできる「Sign in with ChatGPT」機能の導入を検討している。現在、開発者の関心を探るための情報収集を進めており、アプリ規模や既存の課金方法、OpenAI APIの利用状況などを尋ねるフォームも公開されている。この機能は、AppleやGoogleなどが提供するサインイン機能に対抗し、ChatGPTの人気を活かしてオンラインショッピングやSNSなど他分野に進出する狙いもある。既に「Codex CLI」というツールでは試験導入が始まっており、PlusやProユーザーにはAPIクレジットのインセンティブも提供された。", "importance": 1}, {"id": "article_20250526_20250531_OpenAI系_2", "title": "メタ社、製品開発の迅速化のためAIチームを分割と報じられる", "summary": "MetaがAI開発のスピードを上げるため、AI部門を2つのチームに再編したと報じられている。人員削減はなく、1つはFacebookやInstagram、WhatsApp、AIアプリなど消費者向け製品を担当する「AIプロダクトチーム」、もう1つはLlamaモデルの改良など長期的な研究開発を担う「AGI Foundationsチーム」。OpenAIやGoogle、Anthropicなどの動きに対抗する狙いで、最近はスタートアップ向けの「Llama for Startups」プログラムや、競争力をアピールする「LlamaCon」イベントなども展開している", "importance": 1}, {"id": "article_20250526_20250531_OpenAI系_3", "title": "ミストラル、実世界の検索タスクでOpenAIとCohereを凌駕する新しいコード埋め込みモデルを発表", "summary": "フランスのAI企業Mistralが、初の埋め込みモデル「Codestral Embed」を発表した。これはコードに特化したモデルで、RAG（検索拡張生成）や意味的コード検索、類似コード検索、コード分析といった用途に最適化されている。Codestral Embedは、OpenAIのText Embedding 3 LargeやCohere Embed v4.0など、既存の著名な埋め込みモデルをSWE-BenchやText2Codeといったベンチマークで上回ったとされている。料金は100万トークンあたり0.15ドルで、開発者向けに提供される。", "importance": 2}, {"id": "article_20250526_20250531_OpenAI系_4", "title": "ディープシーク、推論AIモデル「R1」をアップデート、ハギング・フェイスで公開", "summary": "中国のスタートアップDeepSeekが、推論AIモデル「R1」のアップデート版をHugging Faceで公開した。このバージョンは小規模な改良とされ、MITライセンスで商用利用も可能。モデルの重さは6850億パラメータと非常に大きく、一般的なPCでは動作が難しい。R1はOpenAIのモデルに匹敵する性能で注目されており、アメリカの一部規制当局からは国家安全保障上の懸念も示されている", "importance": 1}, {"id": "article_20250526_20250531_OpenAI系_5", "title": "イーロン・マスク氏はG42関係者に対し、xAIが含まれない限りトランプ大統領が承認する可能性はないと述べ、OpenAIのアブダビでの取引を阻止しようとしたという", "summary": "OpenAIが中心となり、米国の大手テック企業がアブダビに世界最大級のAIデータセンターを建設する契約を締結した。しかし、この契約を巡ってイーロン・マスクが自身のAI企業xAIを含めるよう強く働きかけていたことが明らかになった。マスクは、UAE大統領の兄が率いるAI企業G42との電話会議で、「xAIが含まれていなければトランプ前大統領は承認しない」と警告したとされる。OpenAIのサム・アルトマンCEOがトランプの中東訪問に同行し契約が進行中と知ったマスクは激怒し、自身も訪問に同行。", "importance": 1}, {"id": "article_20250526_20250531_OpenAI系_6", "title": "ニューヨーク・タイムズ紙、初のジェネレーティブAI契約はアマゾンと", "summary": "ニューヨーク・タイムズはAmazonと複数年にわたるAIライセンス契約を結び、同紙のコンテンツがAlexaなどAmazonのサービスで活用されることになった。記事の要約や抜粋が表示されるほか、AmazonのAIモデルの学習にも活用される予定。これは、タイムズが過去にOpenAIやMicrosoftを著作権侵害で訴えた経緯がある中での動きで、他の出版社も同様に訴訟やライセンス契約を進めている。今回の契約には、The AthleticやNYT Cookingのコンテンツも含まれ、金銭的条件は非公開。", "importance": 1}, {"id": "article_20250526_20250531_OpenAI系_7", "title": "デラウェア州司法長官、OpenAIの再建計画を評価するため銀行を雇ったと報じられる", "summary": "OpenAIの営利化（for-profit化）に関する再構築計画をめぐり、デラウェア州の司法長官が独立評価のために投資銀行を起用すると、ウォール・ストリート・ジャーナルが報じた。これは規制当局による慎重な精査の一環であり、OpenAIの構造転換や資金調達、将来的な上場計画に遅れや複雑化をもたらす可能性がある。OpenAIとマイクロソフトはすでに自らの投資銀行を起用しているが、州側は非営利団体が受け取る持分の評価について独自の検証を進めている模様。特に注目されているのは、OpenAIの構造変更により非営利団体の価値がどのように評価されるかという点。", "importance": 1}], "Apple系": [{"id": "article_20250526_20250531_Apple系_0", "title": "台湾TSMC、ミュンヘンに半導体設計センターを開設へ", "summary": "TSMC（台湾積体電路製造）は、2024年第3四半期にドイツ・ミュンヘンに半導体の設計センターを開設する予定。バイエルン州の経済相ハベルト・アイヴァンガーによると、この拠点は自動車業界など向けのチップ開発を目的としている。TSMCは現在、ドレスデン近郊にパートナー企業と共同で工場も建設中であり、ミュンヘンでの新設計センターはバイエルン州のマイクロエレクトロニクス分野での地位をさらに高めるものとされている。なお、ミュンヘンはすでにインフィニオンやAppleの欧州チップ設計拠点がある都市でもあり、半導体分野の集積が進んでいる。", "importance": 1}], "Microsoft系": [{"id": "article_20250526_20250531_Microsoft系_0", "title": "マイクロソフト、iOS/Android版XboxアプリでCopilot for Gamingのテストを開始", "summary": "マイクロソフトは、ゲーム向けAIアシスタント「Copilot for Gaming」のベータ版をiOSおよびAndroidのXboxアプリで提供開始したと発表した。この初期版では、興味のあるゲームに関する質問への回答、関連情報のリンク提供、自身のアカウントやプレイ履歴、実績などに基づいたパーソナライズ対応が可能。たとえば「自分のゲーマースコアはいくつ？ 上げるコツは？」や「ホラー映画好きだけど、どんなゲームがおすすめ？」といった質問ができる。アカウント関連では「Starfieldで最後に取った実績は？」や「Game Passの更新日はいつ？」なども聞ける。", "importance": 1}, {"id": "article_20250526_20250531_Microsoft系_1", "title": "Netflix共同創業者リード・ヘイスティングスがAnthropicの取締役に就任", "summary": "AnthropicはNetflix共同創業者で元CEOのリード・ヘイスティングスを新たに取締役に迎えると発表した。ヘイスティングスはNetflixを世界的な企業へと成長させ、FacebookやMicrosoftなどの取締役も務めた経験を持つ。教育改革や新興国でのデジタルインフラへの投資などにも関わっており、技術を社会に役立てる視点が期待されている。本人は、AnthropicのAI開発の姿勢に共感し、人類の進歩に貢献したいとコメントしている。", "importance": 1}, {"id": "article_20250526_20250531_Microsoft系_2", "title": "AIエージェントで並列実装なら必須技術！ Git Worktree を理解する", "summary": "Claude Code や GitHub Copilot などのAIツールが普及する中で、複数の開発タスクを並行処理するニーズが高まっている。一方で、従来のGitワークフローはブランチ切り替えによる作業中断や環境再構築の手間、AIエージェントとの相性の悪さといった問題がある。こうした課題に対して注目されているのが「Git Worktree」。これは、同じリポジトリの異なるブランチを別ディレクトリに同時にチェックアウトできる機能で、各作業を完全に分離しながら並列処理が可能になる。", "importance": 1}]};
+        const categoryOrder = ["OpenAI系", "Microsoft系", "Google系", "Apple系", "Meta系", "NVIDIA系", "技術トレンド系", "ロボティクス系"];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('articles-container');
+            const filterControlsContainer = document.getElementById('category-filter-controls');
+            const allCategories = categoryOrder;
+
+            allCategories.forEach(category => {
+                const checkboxId = `filter-checkbox-${category.replace(/\s+/g, '-')}`;
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = checkboxId;
+                checkbox.value = category;
+                checkbox.checked = true;
+                checkbox.addEventListener('change', filterArticles);
+
+                const label = document.createElement('label');
+                label.htmlFor = checkboxId;
+                label.textContent = category;
+
+                filterControlsContainer.appendChild(checkbox);
+                filterControlsContainer.appendChild(label);
+            });
+
+            categoryOrder.forEach(category => {
+                if (articlesData[category] && articlesData[category].length > 0) {
+                    const categorySection = document.createElement('div');
+                    categorySection.className = 'category-section';
+                    categorySection.dataset.categoryName = category;
+
+                    const categoryTitle = document.createElement('h2');
+                    categoryTitle.className = 'category-title';
+                    categoryTitle.textContent = category;
+                    categorySection.appendChild(categoryTitle);
+
+                    const articlesListContainer = document.createElement('div');
+                    articlesListContainer.className = 'articles-list-container';
+                    categorySection.appendChild(articlesListContainer);
+
+                    articlesData[category].forEach(article => {
+                        const articleDiv = document.createElement('div');
+                        articleDiv.className = 'article';
+                        articleDiv.dataset.articleId = article.id; // メモ保存用ID
+
+                        const titleSpan = document.createElement('span');
+                        titleSpan.className = 'article-title';
+                        titleSpan.textContent = article.title;
+
+                        const summaryToggleButton = document.createElement('button');
+                        summaryToggleButton.className = 'summary-toggle';
+                        summaryToggleButton.textContent = '概要表示';
+                        
+                        articleDiv.appendChild(summaryToggleButton);
+                        articleDiv.appendChild(titleSpan);
+
+                        const summaryDiv = document.createElement('div');
+                        summaryDiv.className = 'article-summary';
+                        
+                        const summaryTextNode = document.createTextNode(article.summary);
+                        summaryDiv.appendChild(summaryTextNode);
+
+                        // --- メモ欄の追加 ---
+                        const memoSectionDiv = document.createElement('div');
+                        memoSectionDiv.className = 'memo-section';
+
+                        const memoToggleButton = document.createElement('button');
+                        memoToggleButton.className = 'memo-toggle';
+                        memoToggleButton.textContent = 'メモ編集';
+                        
+                        const memoTextArea = document.createElement('textarea');
+                        memoTextArea.className = 'memo-textarea';
+                        memoTextArea.placeholder = 'ここにメモを入力...';
+                        // ローカルストレージからメモを読み込み
+                        memoTextArea.value = localStorage.getItem(article.id) || '';
+
+                        memoSectionDiv.appendChild(memoToggleButton);
+                        memoSectionDiv.appendChild(memoTextArea);
+                        summaryDiv.appendChild(memoSectionDiv); // 概要Divの子としてメモセクションを追加
+                        // --- メモ欄ここまで ---
+                        
+                        articleDiv.appendChild(summaryDiv);
+                        articlesListContainer.appendChild(articleDiv);
+
+                        summaryToggleButton.addEventListener('click', function(event) {
+                            event.stopPropagation();
+                            const isHidden = summaryDiv.style.display === 'none' || summaryDiv.style.display === '';
+                            summaryDiv.style.display = isHidden ? 'block' : 'none';
+                            summaryToggleButton.textContent = isHidden ? '概要非表示' : '概要表示';
+                        });
+
+                        memoToggleButton.addEventListener('click', function(event) {
+                            event.stopPropagation();
+                            const isMemoHidden = memoTextArea.style.display === 'none' || memoTextArea.style.display === '';
+                            memoTextArea.style.display = isMemoHidden ? 'block' : 'none';
+                            memoToggleButton.textContent = isMemoHidden ? 'メモを隠す' : 'メモ編集';
+                            if(isMemoHidden) memoTextArea.focus();
+                        });
+
+                        memoTextArea.addEventListener('click', function(event) { // textareaクリック時も伝播停止
+                            event.stopPropagation();
+                        });
+                        memoTextArea.addEventListener('blur', function(event) { // blur時も念のため
+                            event.stopPropagation();
+                            localStorage.setItem(article.id, memoTextArea.value);
+                        });
+
+                        articleDiv.addEventListener('click', function() { //記事本体のクリック
+                            articleDiv.classList.toggle('marked');
+                            reorderArticlesInCategory(articlesListContainer);
+                        });
+                    });
+                    container.appendChild(categorySection);
+                }
+            });
+            
+            filterArticles(); // 初期表示のために呼び出し
+
+            function filterArticles() {
+                const selectedCategories = [];
+                filterControlsContainer.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+                    selectedCategories.push(checkbox.value);
+                });
+
+                const articlesContainer = document.getElementById('articles-container');
+                articlesContainer.querySelectorAll('.category-section').forEach(section => {
+                    const categoryName = section.dataset.categoryName;
+                    if (selectedCategories.includes(categoryName)) {
+                        section.style.display = ''; // 表示
+                    } else {
+                        section.style.display = 'none'; // 非表示
+                    }
+                });
+            }
+
+            function reorderArticlesInCategory(articlesContainer) {
+                const articles = Array.from(articlesContainer.children);
+                const markedArticles = articles.filter(a => a.classList.contains('marked'));
+                const unmarkedArticles = articles.filter(a => !a.classList.contains('marked'));
+
+                // 一旦すべての子要素を削除
+                while (articlesContainer.firstChild) {
+                    articlesContainer.removeChild(articlesContainer.firstChild);
+                }
+
+                // マークされた記事を先頭に追加
+                markedArticles.forEach(a => articlesContainer.appendChild(a));
+                // マークされていない記事をその次に追加
+                unmarkedArticles.forEach(a => articlesContainer.appendChild(a));
+            }
+        });
+    </script>
+</body>
+</html>
+    
